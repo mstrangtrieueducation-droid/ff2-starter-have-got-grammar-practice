@@ -10,7 +10,7 @@
       ],
       example: "I've got a big family.",
       label: "Jamie có một gia đình lớn.",
-      audio: ["explain-01", "rule-01", "read-01"],
+      audio: "read-01",
     },
     {
       tag: "Have got",
@@ -23,7 +23,7 @@
       ],
       example: "I've got a big family.",
       label: "I, you, we, they đi với have got.",
-      audio: ["explain-02", "rule-02", "read-01"],
+      audio: "read-01",
     },
     {
       tag: "Has got",
@@ -36,7 +36,7 @@
       ],
       example: "He's got short black hair.",
       label: "He, she, it đi với has got.",
-      audio: ["explain-03", "rule-03", "read-02"],
+      audio: "read-02",
     },
     {
       tag: "Phủ định",
@@ -49,162 +49,79 @@
       ],
       example: "She hasn't got short hair.",
       label: "Haven't got và hasn't got có nghĩa là không có.",
-      audio: ["explain-04", "rule-04", "read-06"],
-    },
-  ];
-
-  const readingItems = [
-    {
-      type: "read",
-      audio: "read-01",
-      sentence: "I've got a big family.",
-      hint: "Chú ý đọc liền “I've got”.",
-    },
-    {
-      type: "read",
-      audio: "read-02",
-      sentence: "He's got short black hair.",
-      hint: "Đọc rõ “He's got” và âm cuối của “short”.",
-    },
-    {
-      type: "cue",
-      audio: "read-03",
-      sentence: "She's got long black hair.",
-      cues: ["Mum", "long black hair"],
-      hint: "Con tự nói trước, sau đó nghe câu mẫu để kiểm tra.",
-    },
-    {
-      type: "cue",
       audio: "read-06",
-      sentence: "She hasn't got short hair.",
-      cues: ["Sister", "not", "short hair"],
-      hint: "Con nhớ dùng cấu trúc phủ định.",
-    },
-    {
-      type: "cue",
-      audio: "read-04",
-      sentence: "Grandpa has got glasses.",
-      cues: ["Grandpa", "glasses"],
-      hint: "Con tự nói cả câu rồi mới nghe đáp án.",
     },
   ];
 
-  const returnPrompts = [
+  const practicePrompts = [
     {
       code: "S-HG-01",
-      type: "Đọc câu",
-      instruction: "Con đọc to câu này",
-      sentence: "I've got a big family.",
+      type: "Câu khẳng định",
+      instruction: "Con nói một câu hoàn chỉnh",
+      cues: ["I", "a big family"],
     },
     {
       code: "S-HG-02",
-      type: "Đọc câu",
-      instruction: "Con đọc to câu này",
-      sentence: "He's got short black hair.",
-    },
-    {
-      code: "S-HG-03",
-      type: "Nói theo gợi ý",
+      type: "Câu khẳng định",
       instruction: "Con nói một câu hoàn chỉnh",
       cues: ["Mum", "long black hair"],
     },
     {
-      code: "S-HG-04",
-      type: "Nói câu phủ định",
-      instruction: "Con nói một câu có “không có”",
-      cues: ["Sister", "not", "short hair"],
-    },
-    {
-      code: "S-HG-05",
-      type: "Nói theo gợi ý",
+      code: "S-HG-03",
+      type: "Câu khẳng định",
       instruction: "Con nói một câu hoàn chỉnh",
       cues: ["Grandpa", "glasses"],
     },
+    {
+      code: "S-HG-04",
+      type: "Câu phủ định",
+      instruction: "Con nói một câu có nghĩa “không có”",
+      cues: ["My sister", "not", "short hair"],
+    },
+    {
+      code: "S-HG-05",
+      type: "Câu phủ định",
+      instruction: "Con nói một câu có nghĩa “không có”",
+      cues: ["My cousins", "not", "glasses"],
+    },
+    {
+      code: "S-HG-06",
+      type: "Câu khẳng định",
+      instruction: "Con nói một câu hoàn chỉnh",
+      cues: ["Grandma", "curly grey hair"],
+    },
   ];
 
-  const timings = window.GRAMMAR_AUDIO_TIMINGS ?? {};
   const sharedAudio = new Audio();
-  let audioRun = 0;
-  let audioFinish = null;
   let lessonIndex = 0;
-  let readIndex = 0;
-  let returnIndex = 0;
-  let autoLessonRun = 0;
+  let practiceIndex = 0;
 
   const $ = (selector) => document.querySelector(selector);
   const $$ = (selector) => [...document.querySelectorAll(selector)];
 
   function stopAudio() {
-    audioRun += 1;
-    const finish = audioFinish;
-    audioFinish = null;
     sharedAudio.pause();
     sharedAudio.currentTime = 0;
-    sharedAudio.ontimeupdate = null;
     sharedAudio.onended = null;
     sharedAudio.onerror = null;
-    clearSpeakingWords();
-    if (finish) finish();
+    $("#playLesson").textContent = "▶ Nghe câu mẫu tiếng Anh";
   }
 
-  function clearSpeakingWords() {
-    $$("#readSentence span").forEach((word) =>
-      word.classList.remove("is-speaking"),
-    );
-  }
-
-  function cancelAutoLesson() {
-    autoLessonRun += 1;
-    const button = $("#autoLesson");
-    if (button) {
-      button.classList.remove("is-running");
-      button.textContent = "Tự động 4 phần";
-    }
-  }
-
-  function playAudioSequence(ids, onTimeUpdate) {
-    const run = ++audioRun;
-    sharedAudio.pause();
-
-    return ids.reduce(
-      (sequence, id) =>
-        sequence.then(
-          () =>
-            new Promise((resolve) => {
-              if (run !== audioRun) {
-                resolve(false);
-                return;
-              }
-
-              sharedAudio.src = `assets/audio/${id}.mp3`;
-              sharedAudio.currentTime = 0;
-              sharedAudio.ontimeupdate = () => {
-                if (run === audioRun && onTimeUpdate) {
-                  onTimeUpdate(id, sharedAudio.currentTime, sharedAudio.duration);
-                }
-              };
-              let settled = false;
-              const finish = () => {
-                if (settled) return;
-                settled = true;
-                if (audioFinish === finish) audioFinish = null;
-                sharedAudio.ontimeupdate = null;
-                sharedAudio.onended = null;
-                sharedAudio.onerror = null;
-                resolve(run === audioRun);
-              };
-              audioFinish = finish;
-              sharedAudio.onended = finish;
-              sharedAudio.onerror = finish;
-              sharedAudio.play().catch(finish);
-            }),
-        ),
-      Promise.resolve(true),
-    );
+  function playEnglishExample(audioId) {
+    stopAudio();
+    sharedAudio.src = `assets/audio/${audioId}.mp3`;
+    $("#playLesson").textContent = "Đang phát câu mẫu...";
+    const finish = () => {
+      sharedAudio.onended = null;
+      sharedAudio.onerror = null;
+      $("#playLesson").textContent = "▶ Nghe câu mẫu tiếng Anh";
+    };
+    sharedAudio.onended = finish;
+    sharedAudio.onerror = finish;
+    sharedAudio.play().catch(finish);
   }
 
   function selectView(viewName) {
-    cancelAutoLesson();
     stopAudio();
     $$(".mode-tabs button").forEach((button) => {
       button.classList.toggle("is-active", button.dataset.view === viewName);
@@ -212,10 +129,6 @@
     $$(".view").forEach((view) => view.classList.remove("is-active"));
     $(`#${viewName}View`).classList.add("is-active");
   }
-
-  $$(".mode-tabs button").forEach((button) => {
-    button.addEventListener("click", () => selectView(button.dataset.view));
-  });
 
   function renderDots(container, count, current, onSelect) {
     container.replaceChildren();
@@ -244,65 +157,12 @@
     $("#lessonExample").textContent = lesson.example;
     $("#visualLabel").textContent = lesson.label;
     renderDots($("#lessonDots"), lessons.length, lessonIndex, (index) => {
-      cancelAutoLesson();
       lessonIndex = index;
       renderLesson();
     });
   }
 
-  $("#playLesson").addEventListener("click", () => {
-    cancelAutoLesson();
-    playAudioSequence(lessons[lessonIndex].audio);
-  });
-
-  $("#autoLesson").addEventListener("click", async () => {
-    if ($("#autoLesson").classList.contains("is-running")) {
-      cancelAutoLesson();
-      stopAudio();
-      return;
-    }
-
-    const run = ++autoLessonRun;
-    $("#autoLesson").classList.add("is-running");
-    $("#autoLesson").textContent = "Dừng tự động";
-    for (let index = lessonIndex; index < lessons.length; index += 1) {
-      if (run !== autoLessonRun) break;
-      lessonIndex = index;
-      renderLesson();
-      const played = await playAudioSequence(lessons[index].audio);
-      if (!played || run !== autoLessonRun) break;
-      await new Promise((resolve) => setTimeout(resolve, 700));
-    }
-    if (run === autoLessonRun) {
-      $("#autoLesson").classList.remove("is-running");
-      $("#autoLesson").textContent = "Tự động 4 phần";
-    }
-  });
-
-  $("#previousLesson").addEventListener("click", () => {
-    cancelAutoLesson();
-    lessonIndex = (lessonIndex - 1 + lessons.length) % lessons.length;
-    renderLesson();
-  });
-
-  $("#nextLesson").addEventListener("click", () => {
-    cancelAutoLesson();
-    lessonIndex = (lessonIndex + 1) % lessons.length;
-    renderLesson();
-  });
-
-  function renderSentence(sentence) {
-    const container = $("#readSentence");
-    container.replaceChildren();
-    sentence.split(/\s+/).forEach((word) => {
-      const span = document.createElement("span");
-      span.textContent = word;
-      container.append(span);
-    });
-  }
-
-  function renderReadingCue(cues) {
-    const container = $("#readCue");
+  function renderCueList(container, cues) {
     container.replaceChildren();
     cues.forEach((cue, index) => {
       if (index > 0) {
@@ -318,193 +178,89 @@
     });
   }
 
-  function revealPracticeAnswer(item) {
-    renderSentence(item.sentence);
-    $("#readSentence").hidden = false;
-  }
-
-  function renderReading() {
-    stopAudio();
-    const item = readingItems[readIndex];
-    $("#readNumber").textContent = String(readIndex + 1);
-    $("#readProgress").style.width = `${((readIndex + 1) / readingItems.length) * 100}%`;
-    $("#readHint").textContent = item.hint;
-    $("#turnNote").textContent = "";
-
-    if (item.type === "cue") {
-      $("#readTag").textContent = "Nói theo gợi ý";
-      $("#readTitle").textContent = "Nhìn gợi ý và tự nói";
-      renderReadingCue(item.cues);
-      $("#readCue").hidden = false;
-      $("#readSentence").hidden = true;
-      $("#readSentence").replaceChildren();
-      $("#markRead").className = "primary-button";
-      $("#markRead").textContent = "Con tự nói trước";
-      $("#playRead").className = "secondary-button";
-      $("#playRead").textContent = "▶ Nghe đáp án";
-      $("#markRead").parentElement.prepend($("#markRead"));
-    } else {
-      $("#readTag").textContent = "Nghe và nhắc lại";
-      $("#readTitle").textContent = "Nghe và đọc theo";
-      $("#readCue").hidden = true;
-      renderSentence(item.sentence);
-      $("#readSentence").hidden = false;
-      $("#playRead").className = "primary-button";
-      $("#playRead").textContent = "▶ Nghe câu mẫu";
-      $("#markRead").className = "secondary-button";
-      $("#markRead").textContent = "Đến lượt con đọc";
-      $("#playRead").parentElement.prepend($("#playRead"));
-    }
-
-    renderDots($("#readDots"), readingItems.length, readIndex, (index) => {
-      readIndex = index;
-      renderReading();
+  function setPracticeTotals() {
+    $$("[data-practice-total]").forEach((element) => {
+      element.textContent = String(practicePrompts.length);
     });
   }
 
-  function highlightReadingWord(audioId, currentTime, duration) {
-    const words = $$("#readSentence span");
-    const boundaries = timings[audioId] ?? [];
-    let activeIndex = -1;
-
-    if (boundaries.length) {
-      boundaries.forEach((boundary, index) => {
-        if (currentTime >= boundary.start) activeIndex = index;
-      });
-    } else if (Number.isFinite(duration) && duration > 0) {
-      activeIndex = Math.min(
-        words.length - 1,
-        Math.floor((currentTime / duration) * words.length),
-      );
-    }
-
-    words.forEach((word, index) =>
-      word.classList.toggle("is-speaking", index === activeIndex),
-    );
-  }
-
-  $("#playRead").addEventListener("click", async () => {
-    $("#turnNote").textContent = "";
-    const item = readingItems[readIndex];
-    if (item.type === "cue") revealPracticeAnswer(item);
-    await playAudioSequence([item.audio], highlightReadingWord);
-    clearSpeakingWords();
-    $("#turnNote").textContent =
-      item.type === "cue"
-        ? "Con so sánh với câu mình vừa nói rồi đọc lại một lần."
-        : "Đến lượt con tự đọc lại cả câu.";
-  });
-
-  $("#markRead").addEventListener("click", () => {
-    stopAudio();
-    const item = readingItems[readIndex];
-    $("#turnNote").textContent =
-      item.type === "cue"
-        ? "Con nhìn hai gợi ý và tự nói một câu hoàn chỉnh."
-        : "Con đọc chậm, rõ và không bỏ âm cuối nhé.";
-  });
-
-  $("#previousRead").addEventListener("click", () => {
-    readIndex = (readIndex - 1 + readingItems.length) % readingItems.length;
-    renderReading();
-  });
-
-  $("#nextRead").addEventListener("click", () => {
-    readIndex = (readIndex + 1) % readingItems.length;
-    renderReading();
-  });
-
-  function renderReturnPrompt() {
-    const prompt = returnPrompts[returnIndex];
-    $("#returnNumber").textContent = String(returnIndex + 1);
-    $("#returnStageNumber").textContent = String(returnIndex + 1);
-    $("#returnProgress").style.width = `${((returnIndex + 1) / returnPrompts.length) * 100}%`;
+  function renderPracticePrompt() {
+    const prompt = practicePrompts[practiceIndex];
+    const number = practiceIndex + 1;
+    $("#practiceNumber").textContent = String(number);
+    $("#practiceStageNumber").textContent = String(number);
+    $("#practiceProgress").style.width = `${(number / practicePrompts.length) * 100}%`;
     $("#promptCode").textContent = prompt.code;
     $("#promptType").textContent = prompt.type;
     $("#promptInstruction").textContent = prompt.instruction;
-    $("#previousPrompt").disabled = returnIndex === 0;
+    $("#previousPrompt").disabled = practiceIndex === 0;
     $("#nextPrompt").textContent =
-      returnIndex === returnPrompts.length - 1
+      practiceIndex === practicePrompts.length - 1
         ? "Hoàn thành ✓"
         : "Câu tiếp theo ›";
 
-    const content = $("#promptContent");
-    content.replaceChildren();
-    if (prompt.sentence) {
-      const sentence = document.createElement("p");
-      sentence.className = "return-sentence";
-      sentence.textContent = prompt.sentence;
-      content.append(sentence);
-      return;
-    }
-
     const cueList = document.createElement("div");
     cueList.className = "cue-list";
-    prompt.cues.forEach((cue, index) => {
-      if (index > 0) {
-        const plus = document.createElement("span");
-        plus.className = "cue-plus";
-        plus.textContent = "+";
-        cueList.append(plus);
-      }
-      const chip = document.createElement("span");
-      chip.className = "cue-chip";
-      chip.textContent = cue;
-      cueList.append(chip);
-    });
-    content.append(cueList);
+    renderCueList(cueList, prompt.cues);
+    $("#promptContent").replaceChildren(cueList);
   }
 
-  $("#returnForm").addEventListener("submit", (event) => {
-    event.preventDefault();
-    const name = $("#studentName").value.trim();
-    const studentClass = $("#studentClass").value.trim();
-    if (!name) {
-      $("#returnError").textContent = "Con nhập họ và tên trước nhé.";
-      $("#studentName").focus();
-      return;
-    }
+  function resetPractice() {
+    practiceIndex = 0;
+    $("#practiceComplete").hidden = true;
+    $("#practiceStage").hidden = true;
+    $("#practiceIntro").hidden = false;
+    $("#practiceNumber").textContent = "0";
+    $("#practiceProgress").style.width = "0%";
+  }
 
-    $("#returnError").textContent = "";
-    $("#returnStudent").textContent = name;
-    $("#returnClass").textContent = studentClass ? `Lớp ${studentClass}` : "";
-    $("#completeStudent").textContent = studentClass
-      ? `${name} – Lớp ${studentClass}`
-      : name;
-    returnIndex = 0;
-    $("#returnIntro").hidden = true;
-    $("#returnComplete").hidden = true;
-    $("#returnStage").hidden = false;
-    renderReturnPrompt();
+  $$(".mode-tabs button").forEach((button) => {
+    button.addEventListener("click", () => selectView(button.dataset.view));
+  });
+
+  $("#playLesson").addEventListener("click", () => {
+    playEnglishExample(lessons[lessonIndex].audio);
+  });
+
+  $("#previousLesson").addEventListener("click", () => {
+    lessonIndex = (lessonIndex - 1 + lessons.length) % lessons.length;
+    renderLesson();
+  });
+
+  $("#nextLesson").addEventListener("click", () => {
+    lessonIndex = (lessonIndex + 1) % lessons.length;
+    renderLesson();
+  });
+
+  $("#startPractice").addEventListener("click", () => {
+    practiceIndex = 0;
+    $("#practiceIntro").hidden = true;
+    $("#practiceComplete").hidden = true;
+    $("#practiceStage").hidden = false;
+    renderPracticePrompt();
   });
 
   $("#previousPrompt").addEventListener("click", () => {
-    if (returnIndex === 0) return;
-    returnIndex -= 1;
-    renderReturnPrompt();
+    if (practiceIndex === 0) return;
+    practiceIndex -= 1;
+    renderPracticePrompt();
   });
 
   $("#nextPrompt").addEventListener("click", () => {
-    if (returnIndex < returnPrompts.length - 1) {
-      returnIndex += 1;
-      renderReturnPrompt();
+    if (practiceIndex < practicePrompts.length - 1) {
+      practiceIndex += 1;
+      renderPracticePrompt();
       return;
     }
-    $("#returnStage").hidden = true;
-    $("#returnComplete").hidden = false;
-    $("#returnNumber").textContent = "5";
-    $("#returnProgress").style.width = "100%";
+    $("#practiceStage").hidden = true;
+    $("#practiceComplete").hidden = false;
+    $("#practiceNumber").textContent = String(practicePrompts.length);
+    $("#practiceProgress").style.width = "100%";
   });
 
-  $("#restartReturn").addEventListener("click", () => {
-    returnIndex = 0;
-    $("#returnComplete").hidden = true;
-    $("#returnIntro").hidden = false;
-    $("#returnNumber").textContent = "1";
-    $("#returnProgress").style.width = "20%";
-  });
+  $("#restartPractice").addEventListener("click", resetPractice);
 
+  setPracticeTotals();
   renderLesson();
-  renderReading();
-  $("#returnProgress").style.width = "20%";
+  $("#practiceProgress").style.width = "0%";
 })();
