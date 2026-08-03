@@ -251,8 +251,7 @@ h1 {
   padding: 34px 38px;
 }
 
-.lesson-tag,
-.prompt-code {
+.lesson-tag {
   width: max-content;
   margin: 0 0 12px;
   padding: 6px 9px;
@@ -261,10 +260,6 @@ h1 {
   color: var(--teal);
   font-size: 12px;
   font-weight: 800;
-}
-
-.prompt-code {
-  text-transform: uppercase;
 }
 
 .lesson-content h2,

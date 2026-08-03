@@ -55,37 +55,31 @@
 
   const practicePrompts = [
     {
-      code: "S-HG-01",
       type: "Câu khẳng định",
       instruction: "Con nói một câu hoàn chỉnh",
       cues: ["I", "a big family"],
     },
     {
-      code: "S-HG-02",
       type: "Câu khẳng định",
       instruction: "Con nói một câu hoàn chỉnh",
       cues: ["Mum", "long black hair"],
     },
     {
-      code: "S-HG-03",
       type: "Câu khẳng định",
       instruction: "Con nói một câu hoàn chỉnh",
       cues: ["Grandpa", "glasses"],
     },
     {
-      code: "S-HG-04",
       type: "Câu phủ định",
       instruction: "Con nói một câu có nghĩa “không có”",
       cues: ["My sister", "not", "short hair"],
     },
     {
-      code: "S-HG-05",
       type: "Câu phủ định",
       instruction: "Con nói một câu có nghĩa “không có”",
       cues: ["My cousins", "not", "glasses"],
     },
     {
-      code: "S-HG-06",
       type: "Câu khẳng định",
       instruction: "Con nói một câu hoàn chỉnh",
       cues: ["Grandma", "curly grey hair"],
@@ -190,7 +184,6 @@
     $("#practiceNumber").textContent = String(number);
     $("#practiceStageNumber").textContent = String(number);
     $("#practiceProgress").style.width = `${(number / practicePrompts.length) * 100}%`;
-    $("#promptCode").textContent = prompt.code;
     $("#promptType").textContent = prompt.type;
     $("#promptInstruction").textContent = prompt.instruction;
     $("#previousPrompt").disabled = practiceIndex === 0;
