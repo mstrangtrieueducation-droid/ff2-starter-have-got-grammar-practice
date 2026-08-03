@@ -27,7 +27,7 @@
       <nav class="mode-nav" aria-label="Chọn phần học">
         <div class="mode-tabs">
           <button class="is-active" type="button" data-view="understand">Hiểu bài</button>
-          <button type="button" data-view="reading">Luyện đọc</button>
+          <button type="button" data-view="reading">Luyện tập</button>
           <button type="button" data-view="return">Trả bài</button>
         </div>
       </nav>
@@ -77,8 +77,8 @@
 
         <section class="view" id="readingView">
           <div class="section-head">
-            <p>Nghe mẫu rồi tự đọc lại</p>
-            <div class="step-count"><b id="readNumber">1</b> / 6</div>
+            <p>Luyện đúng 5 câu sẽ dùng trong bài quay</p>
+            <div class="step-count"><b id="readNumber">1</b> / 5</div>
           </div>
           <div class="progress"><span id="readProgress"></span></div>
 
@@ -92,9 +92,10 @@
               >
             </div>
             <div class="read-copy">
-              <p class="lesson-tag">Listen and repeat</p>
+              <p class="lesson-tag" id="readTag">Nghe và nhắc lại</p>
               <h2 id="readTitle">Nghe và đọc theo</h2>
               <p class="read-hint" id="readHint"></p>
+              <div class="cue-list" id="readCue" hidden></div>
               <p class="sentence" id="readSentence" aria-live="polite"></p>
 
               <div class="stage-actions">
@@ -114,7 +115,7 @@
 
         <section class="view" id="returnView">
           <div class="section-head">
-            <p>5 mã câu cố định để cô chấm video</p>
+            <p>5 câu nói – không đếm giờ, không hiện đáp án</p>
             <div class="question-count"><b id="returnNumber">1</b> / 5</div>
           </div>
           <div class="progress"><span id="returnProgress"></span></div>
@@ -131,7 +132,7 @@
             <form class="return-form" id="returnForm">
               <p class="lesson-tag">Bài trả nói</p>
               <h2>Starter: Have got</h2>
-              <p>Con bật quay màn hình trước, sau đó nhập tên và bắt đầu trả bài.</p>
+              <p>Con bật quay màn hình, nói xong từng câu rồi tự bấm câu tiếp theo. Web không đếm giờ và không hiện đáp án.</p>
               <div class="field-row">
                 <label>
                   Họ và tên
@@ -183,7 +184,7 @@
               <h2>Con đã hoàn thành!</h2>
               <p id="completeStudent"></p>
               <p>FF2 – Starter: Have got</p>
-              <p>Đã trả đủ 5 mã câu</p>
+              <p>Con dừng quay màn hình và nộp video vào link cô đã gửi.</p>
               <button class="secondary-button" id="restartReturn" type="button">Làm lại từ đầu</button>
             </div>
           </section>

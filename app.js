@@ -10,7 +10,7 @@
       ],
       example: "I've got a big family.",
       label: "Jamie có một gia đình lớn.",
-      audio: ["explain-01", "read-01"],
+      audio: ["explain-01", "rule-01", "read-01"],
     },
     {
       tag: "Have got",
@@ -23,7 +23,7 @@
       ],
       example: "I've got a big family.",
       label: "I, you, we, they đi với have got.",
-      audio: ["explain-02", "read-01"],
+      audio: ["explain-02", "rule-02", "read-01"],
     },
     {
       tag: "Has got",
@@ -36,7 +36,7 @@
       ],
       example: "He's got short black hair.",
       label: "He, she, it đi với has got.",
-      audio: ["explain-03", "read-02"],
+      audio: ["explain-03", "rule-03", "read-02"],
     },
     {
       tag: "Phủ định",
@@ -49,40 +49,43 @@
       ],
       example: "She hasn't got short hair.",
       label: "Haven't got và hasn't got có nghĩa là không có.",
-      audio: ["explain-04", "read-06"],
+      audio: ["explain-04", "rule-04", "read-06"],
     },
   ];
 
   const readingItems = [
     {
+      type: "read",
       audio: "read-01",
       sentence: "I've got a big family.",
       hint: "Chú ý đọc liền “I've got”.",
     },
     {
+      type: "read",
       audio: "read-02",
       sentence: "He's got short black hair.",
       hint: "Đọc rõ “He's got” và âm cuối của “short”.",
     },
     {
+      type: "cue",
       audio: "read-03",
       sentence: "She's got long black hair.",
-      hint: "Đọc liền “She's got”, không bỏ từ “got”.",
+      cues: ["Mum", "long black hair"],
+      hint: "Con tự nói trước, sau đó nghe câu mẫu để kiểm tra.",
     },
     {
-      audio: "read-04",
-      sentence: "Grandpa has got glasses.",
-      hint: "Đọc rõ “has got” và từ “glasses”.",
-    },
-    {
-      audio: "read-05",
-      sentence: "Grandma has got curly grey hair.",
-      hint: "Ngắt nhẹ sau “has got”.",
-    },
-    {
+      type: "cue",
       audio: "read-06",
       sentence: "She hasn't got short hair.",
-      hint: "Chú ý âm cuối trong “hasn't” và “short”.",
+      cues: ["Sister", "not", "short hair"],
+      hint: "Con nhớ dùng cấu trúc phủ định.",
+    },
+    {
+      type: "cue",
+      audio: "read-04",
+      sentence: "Grandpa has got glasses.",
+      cues: ["Grandpa", "glasses"],
+      hint: "Con tự nói cả câu rồi mới nghe đáp án.",
     },
   ];
 
@@ -298,6 +301,28 @@
     });
   }
 
+  function renderReadingCue(cues) {
+    const container = $("#readCue");
+    container.replaceChildren();
+    cues.forEach((cue, index) => {
+      if (index > 0) {
+        const plus = document.createElement("span");
+        plus.className = "cue-plus";
+        plus.textContent = "+";
+        container.append(plus);
+      }
+      const chip = document.createElement("span");
+      chip.className = "cue-chip";
+      chip.textContent = cue;
+      container.append(chip);
+    });
+  }
+
+  function revealPracticeAnswer(item) {
+    renderSentence(item.sentence);
+    $("#readSentence").hidden = false;
+  }
+
   function renderReading() {
     stopAudio();
     const item = readingItems[readIndex];
@@ -305,7 +330,32 @@
     $("#readProgress").style.width = `${((readIndex + 1) / readingItems.length) * 100}%`;
     $("#readHint").textContent = item.hint;
     $("#turnNote").textContent = "";
-    renderSentence(item.sentence);
+
+    if (item.type === "cue") {
+      $("#readTag").textContent = "Nói theo gợi ý";
+      $("#readTitle").textContent = "Nhìn gợi ý và tự nói";
+      renderReadingCue(item.cues);
+      $("#readCue").hidden = false;
+      $("#readSentence").hidden = true;
+      $("#readSentence").replaceChildren();
+      $("#markRead").className = "primary-button";
+      $("#markRead").textContent = "Con tự nói trước";
+      $("#playRead").className = "secondary-button";
+      $("#playRead").textContent = "▶ Nghe đáp án";
+      $("#markRead").parentElement.prepend($("#markRead"));
+    } else {
+      $("#readTag").textContent = "Nghe và nhắc lại";
+      $("#readTitle").textContent = "Nghe và đọc theo";
+      $("#readCue").hidden = true;
+      renderSentence(item.sentence);
+      $("#readSentence").hidden = false;
+      $("#playRead").className = "primary-button";
+      $("#playRead").textContent = "▶ Nghe câu mẫu";
+      $("#markRead").className = "secondary-button";
+      $("#markRead").textContent = "Đến lượt con đọc";
+      $("#playRead").parentElement.prepend($("#playRead"));
+    }
+
     renderDots($("#readDots"), readingItems.length, readIndex, (index) => {
       readIndex = index;
       renderReading();
@@ -336,14 +386,22 @@
   $("#playRead").addEventListener("click", async () => {
     $("#turnNote").textContent = "";
     const item = readingItems[readIndex];
+    if (item.type === "cue") revealPracticeAnswer(item);
     await playAudioSequence([item.audio], highlightReadingWord);
     clearSpeakingWords();
-    $("#turnNote").textContent = "Đến lượt con tự đọc lại cả câu.";
+    $("#turnNote").textContent =
+      item.type === "cue"
+        ? "Con so sánh với câu mình vừa nói rồi đọc lại một lần."
+        : "Đến lượt con tự đọc lại cả câu.";
   });
 
   $("#markRead").addEventListener("click", () => {
     stopAudio();
-    $("#turnNote").textContent = "Con đọc chậm, rõ và không bỏ âm cuối nhé.";
+    const item = readingItems[readIndex];
+    $("#turnNote").textContent =
+      item.type === "cue"
+        ? "Con nhìn hai gợi ý và tự nói một câu hoàn chỉnh."
+        : "Con đọc chậm, rõ và không bỏ âm cuối nhé.";
   });
 
   $("#previousRead").addEventListener("click", () => {
