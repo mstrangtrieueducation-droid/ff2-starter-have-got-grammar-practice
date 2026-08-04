@@ -532,13 +532,6 @@ h1 {
   line-height: 1.45;
 }
 
-.no-answer-note {
-  margin-bottom: 16px !important;
-  color: var(--red) !important;
-  font-size: 14px;
-  font-weight: 900;
-}
-
 .field-row {
   display: grid;
   grid-template-columns: 1.6fr 1fr;
