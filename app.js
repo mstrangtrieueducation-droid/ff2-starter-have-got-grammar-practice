@@ -113,7 +113,7 @@
       group: "Have got",
       type: "Have got · Câu khẳng định",
       instruction: "Con nói một câu hoàn chỉnh",
-      cues: ["Mum", "long black", imageCue("hair-long-black")],
+      cues: ["Mum", "long black", imageCue("hair")],
       answer: "Mum has got long black hair.",
       visual: "family",
     },
@@ -129,7 +129,7 @@
       group: "Have got",
       type: "Have got · Câu phủ định",
       instruction: "Con nói một câu có nghĩa “không có”",
-      cues: ["My sister", "not", "short", imageCue("hair-short-black")],
+      cues: ["My sister", "not", "short", imageCue("hair")],
       answer: "My sister hasn't got short hair.",
       visual: "family",
     },
@@ -145,7 +145,7 @@
       group: "Have got",
       type: "Have got · Câu khẳng định",
       instruction: "Con nói một câu hoàn chỉnh",
-      cues: ["Grandma", "curly grey", imageCue("hair-curly-grey")],
+      cues: ["Grandma", "curly grey", imageCue("hair")],
       answer: "Grandma has got curly grey hair.",
       visual: "family",
     },
@@ -192,17 +192,57 @@
   ];
 
   const sharedAudio = new Audio();
+  const timings = window.GRAMMAR_AUDIO_TIMINGS ?? {};
   let lessonIndex = 0;
   let practiceIndex = 0;
 
   const $ = (selector) => document.querySelector(selector);
   const $$ = (selector) => [...document.querySelectorAll(selector)];
 
+  function renderKaraokeSentence(sentence) {
+    const container = $("#lessonExample");
+    container.replaceChildren();
+    sentence.split(/\s+/).forEach((word) => {
+      const span = document.createElement("span");
+      span.textContent = word;
+      container.append(span);
+    });
+  }
+
+  function clearKaraoke() {
+    $$("#lessonExample span").forEach((word) => {
+      word.classList.remove("is-speaking");
+    });
+  }
+
+  function highlightLessonWord(audioId) {
+    const words = $$("#lessonExample span");
+    const boundaries = timings[audioId] ?? [];
+    let activeIndex = -1;
+
+    if (boundaries.length === words.length) {
+      for (let index = 0; index < boundaries.length; index += 1) {
+        if (sharedAudio.currentTime >= boundaries[index].start) {
+          activeIndex = index;
+        }
+      }
+    } else if (Number.isFinite(sharedAudio.duration) && sharedAudio.duration > 0) {
+      const progress = sharedAudio.currentTime / sharedAudio.duration;
+      activeIndex = Math.min(words.length - 1, Math.floor(progress * words.length));
+    }
+
+    words.forEach((word, index) => {
+      word.classList.toggle("is-speaking", index === activeIndex);
+    });
+  }
+
   function stopAudio() {
     sharedAudio.pause();
     sharedAudio.currentTime = 0;
+    sharedAudio.ontimeupdate = null;
     sharedAudio.onended = null;
     sharedAudio.onerror = null;
+    clearKaraoke();
     $("#playLesson").textContent = "▶ Nghe câu mẫu tiếng Anh";
   }
 
@@ -211,10 +251,13 @@
     sharedAudio.src = `assets/audio/${audioId}.mp3`;
     $("#playLesson").textContent = "Đang phát câu mẫu...";
     const finish = () => {
+      sharedAudio.ontimeupdate = null;
       sharedAudio.onended = null;
       sharedAudio.onerror = null;
+      clearKaraoke();
       $("#playLesson").textContent = "▶ Nghe câu mẫu tiếng Anh";
     };
+    sharedAudio.ontimeupdate = () => highlightLessonWord(audioId);
     sharedAudio.onended = finish;
     sharedAudio.onerror = finish;
     sharedAudio.play().catch(finish);
@@ -255,7 +298,7 @@
     $("#lessonFormula").innerHTML = lesson.formula
       .map((row) => `<div class="formula-row">${row}</div>`)
       .join("");
-    $("#lessonExample").textContent = lesson.example;
+    renderKaraokeSentence(lesson.example);
     $("#visualLabel").textContent = lesson.label;
     $("#lessonVisual").src = roomLesson
       ? "assets/starter-room-scene.webp"

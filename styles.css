@@ -357,10 +357,24 @@ h1 {
 }
 
 .example-line {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
   margin: 0 0 22px;
   font-size: 22px;
   font-weight: 700;
   line-height: 1.35;
+}
+
+.example-line span {
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: background 90ms ease, color 90ms ease;
+}
+
+.example-line span.is-speaking {
+  background: var(--yellow);
+  color: #172033;
 }
 
 .action-row,
@@ -747,9 +761,6 @@ textarea {
   box-shadow: 0 2px 7px rgba(32, 47, 66, 0.08);
 }
 
-.cue-image--hair-long-black,
-.cue-image--hair-short-black,
-.cue-image--hair-curly-grey,
 .cue-image--glasses {
   background-image: url("assets/starter-family-vocabulary.webp");
   background-size: 200% 200%;
@@ -762,16 +773,9 @@ textarea {
   background-size: cover;
 }
 
-.cue-image--hair-long-black {
-  background-position: 0 0;
-}
-
-.cue-image--hair-short-black {
-  background-position: 100% 0;
-}
-
-.cue-image--hair-curly-grey {
-  background-position: 0 100%;
+.cue-image--hair {
+  background-image: url("assets/starter-hair-vocabulary.webp");
+  background-size: contain;
 }
 
 .cue-image--glasses {
