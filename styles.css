@@ -521,11 +521,17 @@ h1 {
   background: #edf4f5;
 }
 
+.return-intro-collage {
+  display: grid;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+
 .return-intro-image img {
   width: 100%;
   height: 100%;
+  min-height: 0;
   display: block;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .return-form {
@@ -728,6 +734,89 @@ textarea {
   font-weight: 700;
 }
 
+.cue-image {
+  width: 138px;
+  aspect-ratio: 4 / 3;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border: 1px solid #aebdc9;
+  border-radius: 6px;
+  background-color: #fff;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: 0 2px 7px rgba(32, 47, 66, 0.08);
+}
+
+.cue-image--hair-long-black,
+.cue-image--hair-short-black,
+.cue-image--hair-curly-grey,
+.cue-image--glasses {
+  background-image: url("assets/starter-family-vocabulary.webp");
+  background-size: 200% 200%;
+}
+
+.cue-image--family {
+  width: 158px;
+  background-image: url("assets/family-birthday.webp");
+  background-position: center 32%;
+  background-size: cover;
+}
+
+.cue-image--hair-long-black {
+  background-position: 0 0;
+}
+
+.cue-image--hair-short-black {
+  background-position: 100% 0;
+}
+
+.cue-image--hair-curly-grey {
+  background-position: 0 100%;
+}
+
+.cue-image--glasses {
+  background-position: 100% 100%;
+}
+
+.cue-image--pillow,
+.cue-image--table,
+.cue-image--dolls,
+.cue-image--bed,
+.cue-image--teddy-bear,
+.cue-image--cupboard {
+  background-image: url("assets/starter-room-vocabulary.webp");
+  background-size: 300% 200%;
+}
+
+.cue-image--pillow {
+  background-position: 0 0;
+}
+
+.cue-image--table {
+  background-position: 50% 0;
+}
+
+.cue-image--dolls {
+  background-position: 100% 0;
+}
+
+.cue-image--bed {
+  background-position: 0 100%;
+}
+
+.cue-image--teddy-bear {
+  background-position: 50% 100%;
+}
+
+.cue-image--cupboard {
+  background-position: 100% 100%;
+}
+
+.cue-image.is-compact {
+  width: 58px;
+  box-shadow: none;
+}
+
 .cue-plus {
   color: var(--muted);
   font-size: 20px;
@@ -775,6 +864,91 @@ textarea {
   margin: 5px 0;
   color: var(--muted);
   font-size: 17px;
+}
+
+.answer-sheet {
+  min-height: 0;
+  display: block;
+  padding: 30px;
+  text-align: left;
+}
+
+.answer-sheet-inner {
+  width: min(100%, 820px);
+  margin: 0 auto;
+}
+
+.answer-sheet h2 {
+  margin-bottom: 6px;
+}
+
+.answer-sheet .lesson-tag {
+  margin: 0 0 12px;
+  color: var(--teal);
+  font-size: 13px;
+}
+
+.answer-sheet .answer-sheet-note,
+.answer-sheet .answer-finish-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.answer-group {
+  margin-top: 24px;
+}
+
+.answer-group h3 {
+  margin: 0;
+  padding: 9px 12px;
+  border-left: 5px solid var(--pink);
+  background: #fff2f7;
+  color: var(--pink-dark);
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.answer-list {
+  margin: 0;
+  padding-left: 38px;
+}
+
+.answer-list li {
+  padding: 10px 0 10px 5px;
+  border-bottom: 1px solid var(--line);
+}
+
+.answer-list li::marker {
+  color: var(--pink-dark);
+  font-weight: 700;
+}
+
+.answer-row {
+  display: grid;
+  grid-template-columns: minmax(58px, auto) minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+
+.answer-thumbnails {
+  display: flex;
+  gap: 5px;
+}
+
+.answer-row p {
+  margin: 0;
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.answer-sheet .answer-finish-note {
+  margin: 22px 0 14px;
+  color: var(--green);
+  font-weight: 600;
 }
 
 [hidden] {
@@ -982,6 +1156,12 @@ textarea:focus-visible {
     border-bottom: 1px solid var(--line);
   }
 
+  .return-intro-collage {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: 1fr;
+    aspect-ratio: 2 / 1;
+  }
+
   .lesson-content,
   .read-copy,
   .return-form,
@@ -1041,6 +1221,48 @@ textarea:focus-visible {
 
   .cue-chip {
     font-size: 17px;
+  }
+
+  .cue-image {
+    width: 118px;
+  }
+
+  .cue-image--family {
+    width: 136px;
+  }
+
+  .cue-image.is-compact {
+    width: 50px;
+  }
+
+  .dot-row {
+    gap: 4px;
+  }
+
+  .dot-row button {
+    width: 24px;
+    height: 24px;
+  }
+
+  .lesson-nav {
+    gap: 6px;
+  }
+
+  .answer-sheet {
+    padding: 22px 16px;
+  }
+
+  .answer-list {
+    padding-left: 30px;
+  }
+
+  .answer-row {
+    grid-template-columns: minmax(50px, auto) minmax(0, 1fr);
+    gap: 9px;
+  }
+
+  .answer-row p {
+    font-size: 15px;
   }
 
   .grading-item {

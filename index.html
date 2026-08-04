@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
     <meta name="theme-color" content="#cc3475">
     <link rel="icon" href="data:,">
-    <title>FF2 Starter: Have got | Grammar Practice</title>
+    <title>FF2 Starter: About us | Grammar Practice</title>
     <meta
       name="description"
-      content="Giải thích ngữ pháp Have got bằng tiếng Việt và luyện nói từ gợi ý để quay bài."
+      content="Giải thích ngữ pháp Starter bằng tiếng Việt và luyện nói từ gợi ý hình ảnh để quay bài."
     >
-    <link rel="stylesheet" href="styles.css?v=font-be-vietnam-pro-2">
+    <link rel="stylesheet" href="styles.css?v=starter-grammar-3">
   </head>
   <body>
     <div class="shell">
@@ -19,7 +19,7 @@
           <span class="brand-mark">FF2</span>
           <div>
             <p class="eyebrow">Grammar Practice</p>
-            <h1>Starter: Have got</h1>
+            <h1>Starter: About us</h1>
           </div>
         </div>
       </header>
@@ -35,13 +35,17 @@
         <section class="view is-active" id="understandView">
           <div class="section-head">
             <p>Giải thích bằng chữ, nghe câu mẫu tiếng Anh</p>
-            <div class="step-count"><b id="lessonNumber">1</b> / 4</div>
+            <div class="step-count">
+              <b id="lessonNumber">1</b> /
+              <span id="lessonTotal">7</span>
+            </div>
           </div>
           <div class="progress"><span id="lessonProgress"></span></div>
 
           <article class="lesson-stage">
             <div class="visual-pane">
               <img
+                id="lessonVisual"
                 src="assets/family-birthday.webp"
                 alt="Một gia đình đang ngồi bên bàn sinh nhật"
                 width="1536"
@@ -73,7 +77,7 @@
 
         <section class="view" id="practiceView">
           <div class="section-head">
-            <p>Ghép từ gợi ý thành câu hoàn chỉnh</p>
+            <p>Ghép chữ và hình gợi ý thành câu hoàn chỉnh</p>
             <div class="question-count">
               <b id="practiceNumber">0</b> /
               <span data-practice-total></span>
@@ -82,25 +86,31 @@
           <div class="progress"><span id="practiceProgress"></span></div>
 
           <section class="return-intro" id="practiceIntro">
-            <div class="return-intro-image">
+            <div class="return-intro-image return-intro-collage">
               <img
                 src="assets/family-birthday.webp"
                 alt="Gia đình trong bài luyện nói Have got"
                 width="1536"
                 height="1024"
               >
+              <img
+                src="assets/starter-room-scene.webp"
+                alt="Phòng ngủ có đồ vật ở các vị trí khác nhau"
+                width="1614"
+                height="975"
+              >
             </div>
             <div class="return-form">
               <p class="lesson-tag">Cách làm bài</p>
               <h2>Con nhìn gợi ý và tự nói</h2>
               <p class="practice-intro-copy">
-                Con áp dụng cấu trúc ngữ pháp vừa học và từ vựng của Unit để ghép
-                các từ gợi ý thành câu tiếng Anh hoàn chỉnh. Con
-                <strong>luyện tập một lượt trước</strong>. Khi đã nói tốt, con bấm
-                <strong>Làm lại từ đầu</strong>, bật quay màn hình và trả bài.
-                Ngoài việc dùng đúng ngữ pháp, con nhớ
+                Con áp dụng cấu trúc ngữ pháp vừa học và từ vựng trong bài để
+                ghép chữ cùng hình gợi ý thành câu tiếng Anh hoàn chỉnh. Trước
+                khi bấm <strong>Bắt đầu</strong>, con bật quay màn hình. Ngoài
+                việc dùng đúng ngữ pháp, con nhớ
                 <strong>phát âm thật chuẩn, nói to và rõ</strong>. Nói xong mỗi
-                câu, con tự bấm <strong>Câu tiếp theo</strong>.
+                câu, con tự bấm <strong>Câu tiếp theo</strong>. Sau câu cuối,
+                con xem <strong>sheet đáp án</strong> để tự kiểm tra.
               </p>
 
               <div class="practice-example" aria-label="Ví dụ cách làm">
@@ -108,7 +118,13 @@
                 <div class="cue-list">
                   <span class="cue-chip">Dad</span>
                   <span class="cue-plus">+</span>
-                  <span class="cue-chip">short black hair</span>
+                  <span class="cue-chip">short black</span>
+                  <span class="cue-plus">+</span>
+                  <span
+                    class="cue-image cue-image--hair-short-black"
+                    role="img"
+                    aria-label="Hình từ vựng"
+                  ></span>
                 </div>
                 <p class="example-answer">
                   Con nói: <strong>Dad has got short black hair.</strong>
@@ -131,6 +147,7 @@
             <div class="return-body">
               <div class="return-image">
                 <img
+                  id="practiceVisual"
                   src="assets/family-birthday.webp"
                   alt="Hình gia đình gợi ý cho bài nói"
                   width="1536"
@@ -150,12 +167,17 @@
             </div>
           </section>
 
-          <section class="completion" id="practiceComplete" hidden>
-            <div>
-              <div class="completion-mark">✓</div>
-              <h2>Con đã hoàn thành!</h2>
-              <p>FF2 – Starter: Have got</p>
-              <p>Con dừng quay màn hình và nộp video vào link cô đã gửi.</p>
+          <section class="completion answer-sheet" id="practiceComplete" hidden>
+            <div class="answer-sheet-inner">
+              <p class="lesson-tag">Sheet đáp án</p>
+              <h2>Con kiểm tra lại nhé!</h2>
+              <p class="answer-sheet-note">
+                Con chỉ xem đáp án sau khi đã nói xong tất cả các câu.
+              </p>
+              <div id="answerGroups"></div>
+              <p class="answer-finish-note">
+                Con dừng quay màn hình và nộp video vào link cô đã gửi.
+              </p>
               <button class="secondary-button" id="restartPractice" type="button">
                 Làm lại từ đầu
               </button>
@@ -165,6 +187,6 @@
       </main>
     </div>
 
-    <script src="app.js"></script>
+    <script src="app.js?v=starter-grammar-3"></script>
   </body>
 </html>
