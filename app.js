@@ -17,7 +17,7 @@
       tag: "Have got · Đầy đủ và nói gọn",
       title: "Have got nói gọn thế nào?",
       note:
-        "Với I, you, we và they, các con dùng have got. Khi nói gọn, have gắn vào từng chủ ngữ và trở thành ’ve. Vì vậy không chỉ I mà cả you, we và they đều có dạng nói gọn.",
+        "Với I, you, we và they, các con dùng have got. Khi nói gọn, have gắn vào từng chủ ngữ và trở thành ’ve.",
       formula: [
         '<span class="subject">I have got</span><span>→</span><span class="verb">I\'ve got</span>',
         '<span class="subject">You have got</span><span>→</span><span class="verb">You\'ve got</span>',
